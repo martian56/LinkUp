@@ -32,6 +32,12 @@ export const useWebSocket = (
   const [error, setError] = useState<Error | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const onMessageRef = useRef(onMessage);
+
+  // Keep the ref updated without causing reconnections
+  useEffect(() => {
+    onMessageRef.current = onMessage;
+  }, [onMessage]);
 
   const connect = useCallback(() => {
     try {
@@ -51,7 +57,8 @@ export const useWebSocket = (
         try {
           const message: WSMessage = JSON.parse(event.data);
           setLastMessage(message);
-          onMessage?.(message);
+          // Use ref to avoid dependency issues
+          onMessageRef.current?.(message);
         } catch (err) {
           console.error('Error parsing WebSocket message:', err);
         }
@@ -77,7 +84,7 @@ export const useWebSocket = (
       console.error('Error creating WebSocket:', err);
       setError(err as Error);
     }
-  }, [meetingCode, clientId, onMessage]);
+  }, [meetingCode, clientId]);
 
   useEffect(() => {
     connect();

@@ -41,9 +41,12 @@ export const useWebRTC = (options?: UseWebRTCOptions) => {
     
     // Add local stream tracks
     if (localStreamRef.current) {
+      console.log('Adding local tracks to peer connection for:', clientId);
       localStreamRef.current.getTracks().forEach((track) => {
         pc.addTrack(track, localStreamRef.current!);
       });
+    } else {
+      console.warn('No local stream available when creating peer connection for:', clientId);
     }
 
     // Handle remote stream
@@ -96,15 +99,35 @@ export const useWebRTC = (options?: UseWebRTCOptions) => {
   }, [createPeerConnection]);
 
   const handleOffer = useCallback(async (clientId: string, offer: RTCSessionDescriptionInit): Promise<RTCSessionDescriptionInit | null> => {
-    const pc = createPeerConnection(clientId);
+    // Check if we already have a peer connection for this client
+    let pc = peerConnectionsRef.current.get(clientId);
+    if (!pc) {
+      console.log('Creating new peer connection for offer from:', clientId);
+      pc = createPeerConnection(clientId);
+    } else {
+      console.log('Reusing existing peer connection for offer from:', clientId);
+      // If remote description is already set, we might be handling a duplicate offer
+      if (pc.remoteDescription) {
+        console.warn('Remote description already set for:', clientId, 'current state:', pc.signalingState);
+        // If we're in a state where we can set it again, continue, otherwise return
+        if (pc.signalingState === 'stable') {
+          // We can set it again
+        } else {
+          console.error('Cannot set remote description, signaling state:', pc.signalingState);
+          return null;
+        }
+      }
+    }
     
     try {
       await pc.setRemoteDescription(new RTCSessionDescription(offer));
+      console.log('Set remote description for:', clientId, 'signaling state:', pc.signalingState);
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
+      console.log('Created and set local answer for:', clientId);
       return answer;
     } catch (error) {
-      console.error('Error handling offer:', error);
+      console.error('Error handling offer:', error, 'signaling state:', pc?.signalingState);
       return null;
     }
   }, [createPeerConnection]);

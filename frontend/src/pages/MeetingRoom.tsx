@@ -51,11 +51,14 @@ export default function MeetingRoom() {
   } = useWebRTC({
     onIceCandidate: (clientId: string, candidate: RTCIceCandidate) => {
       if (sendMessageRef.current) {
+        console.log('Sending ICE candidate to:', clientId);
         sendMessageRef.current({
           type: WSMessageType.ICE_CANDIDATE,
           target: clientId,
           data: candidate.toJSON(),
         });
+      } else {
+        console.warn('sendMessageRef is null, cannot send ICE candidate to:', clientId);
       }
     },
   });
@@ -78,22 +81,38 @@ export default function MeetingRoom() {
 
   // WebSocket message handler
   const handleWebSocketMessage = useCallback((message: WSMessage) => {
-    console.log('Received WebSocket message:', message.type);
+    console.log('Received WebSocket message:', message.type, 'Full message:', message);
 
     switch (message.type) {
       case WSMessageType.USER_JOINED:
         if (message.clientId && message.clientId !== clientId) {
-          setOtherParticipants((prev) => [...prev, message.clientId!]);
-          // Create offer to new participant
-          createOffer(message.clientId).then((offer) => {
-            if (offer && sendMessageRef.current) {
-              sendMessageRef.current({
-                type: WSMessageType.OFFER,
-                target: message.clientId,
-                data: offer,
-              });
+          console.log('User joined:', message.clientId);
+          setOtherParticipants((prev) => {
+            if (!prev.includes(message.clientId!)) {
+              return [...prev, message.clientId!];
             }
+            return prev;
           });
+          // Create offer to new participant only if we don't already have a connection
+          if (!hasPeerConnection(message.clientId) && sendMessageRef.current) {
+            console.log('Creating offer to:', message.clientId);
+            createOffer(message.clientId).then((offer) => {
+              if (offer && sendMessageRef.current) {
+                console.log('Sending offer to:', message.clientId);
+                sendMessageRef.current({
+                  type: WSMessageType.OFFER,
+                  target: message.clientId,
+                  data: offer,
+                });
+              } else {
+                console.error('Failed to create offer or sendMessageRef is null');
+              }
+            }).catch((error) => {
+              console.error('Error creating offer:', error);
+            });
+          } else {
+            console.log('Already have peer connection with:', message.clientId);
+          }
         }
         break;
 
@@ -114,52 +133,49 @@ export default function MeetingRoom() {
           const others = message.participants.filter((id: string) => id !== clientId);
           setOtherParticipants(others);
           
-          // Create offers to existing participants when we first join
-          // Use hasPeerConnection to avoid creating duplicate offers
-          if (!isInitialized && others.length > 0) {
-            others.forEach((otherId: string) => {
-              // Only create offer if we don't already have a peer connection
-              // This prevents duplicate offers if we already received one from this peer
-              if (!hasPeerConnection(otherId) && sendMessageRef.current) {
-                createOffer(otherId).then((offer) => {
-                  if (offer && sendMessageRef.current) {
-                    sendMessageRef.current({
-                      type: WSMessageType.OFFER,
-                      target: otherId,
-                      data: offer,
-                    });
-                  }
-                });
-              }
-            });
-          }
+          // When we first join, we receive the list of existing participants
+          // We should wait for existing participants to send us offers (via USER_JOINED on their side)
+          // Don't create offers here - let existing participants initiate via USER_JOINED
           setIsInitialized(true);
         }
         break;
 
       case WSMessageType.OFFER:
         if (message.from && message.data) {
+          console.log('Received offer from:', message.from, 'localStream ready:', !!localStream);
+          // Handle offer - the useWebRTC hook will check if local stream is ready
           handleOffer(message.from, message.data).then((answer) => {
             if (answer && sendMessageRef.current) {
+              console.log('Sending answer to:', message.from);
               sendMessageRef.current({
                 type: WSMessageType.ANSWER,
                 target: message.from,
                 data: answer,
               });
+            } else {
+              console.error('Failed to create answer or sendMessageRef is null');
             }
+          }).catch((error) => {
+            console.error('Error handling offer:', error);
           });
         }
         break;
 
       case WSMessageType.ANSWER:
         if (message.from && message.data) {
-          handleAnswer(message.from, message.data);
+          console.log('Received answer from:', message.from);
+          handleAnswer(message.from, message.data).catch((error) => {
+            console.error('Error handling answer:', error);
+          });
         }
         break;
 
       case WSMessageType.ICE_CANDIDATE:
         if (message.from && message.data) {
-          handleRemoteIceCandidate(message.from, message.data);
+          console.log('Received ICE candidate from:', message.from);
+          handleRemoteIceCandidate(message.from, message.data).catch((error) => {
+            console.error('Error handling ICE candidate:', error);
+          });
         }
         break;
 
@@ -207,6 +223,10 @@ export default function MeetingRoom() {
             return newMap;
           });
         }
+        break;
+
+      default:
+        console.warn('Unhandled WebSocket message type:', message.type, message);
         break;
     }
   }, [clientId, createOffer, handleOffer, handleAnswer, handleRemoteIceCandidate, removePeer, hasPeerConnection, isInitialized]);
