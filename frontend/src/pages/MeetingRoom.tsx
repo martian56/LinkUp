@@ -35,7 +35,8 @@ export default function MeetingRoom() {
   const [participantsOpen, setParticipantsOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [leaveModalOpen, setLeaveModalOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [participants, setParticipants] = useState<Map<string, { displayName?: string; audioEnabled?: boolean; videoEnabled?: boolean; screenSharing?: boolean }>>(new Map());
   const [, setOtherParticipants] = useState<string[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -761,12 +762,19 @@ export default function MeetingRoom() {
     };
   }, [chatOpen, participantsOpen, handleToggleAudio, handleToggleVideo, handleScreenShare, handleLeave]);
 
+  const copyMeetingCode = () => {
+    navigator.clipboard.writeText(normalizedMeetingCode.toUpperCase()).then(() => {
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
+    });
+  };
+
   const copyMeetingLink = () => {
     // Use normalized code for sharing
     const link = `${window.location.origin}/join?code=${normalizedMeetingCode}`;
     navigator.clipboard.writeText(link).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
     });
   };
 
@@ -801,20 +809,45 @@ export default function MeetingRoom() {
           </button>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-gray-800 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg">
-            <span className="text-xs sm:text-sm font-mono text-primary-400">{normalizedMeetingCode.toUpperCase()}</span>
-            <button
-              onClick={copyMeetingLink}
-              className="p-1 hover:bg-gray-700 rounded transition-colors"
-              title="Copy meeting link"
-            >
-              {copied ? (
-                <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-400" />
-              ) : (
-                <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
-              )}
-            </button>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+          {/* Meeting Code */}
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-500">Meeting Code</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 bg-gray-800 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg">
+              <span className="text-xs sm:text-sm font-mono text-primary-400">{normalizedMeetingCode.toUpperCase()}</span>
+              <button
+                onClick={copyMeetingCode}
+                className="p-1 hover:bg-gray-700 rounded transition-colors"
+                title="Copy meeting code"
+              >
+                {copiedCode ? (
+                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-400" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Meeting Link */}
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-500">Meeting Link</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 bg-gray-800 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg max-w-[200px] sm:max-w-[250px]">
+              <span className="text-xs sm:text-sm text-gray-300 truncate">
+                {`${window.location.origin}/join?code=${normalizedMeetingCode}`}
+              </span>
+              <button
+                onClick={copyMeetingLink}
+                className="p-1 hover:bg-gray-700 rounded transition-colors flex-shrink-0"
+                title="Copy meeting link"
+              >
+                {copiedLink ? (
+                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-400" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
