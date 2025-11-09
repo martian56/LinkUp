@@ -183,7 +183,7 @@ export default function VideoGrid({
     const displayName = participant?.displayName || (pinnedVideo.isLocal ? 'You' : pinnedVideo.clientId.substring(0, 8));
 
     return (
-      <div className="h-full w-full flex flex-col gap-2">
+      <div className="h-full w-full flex flex-col gap-1 sm:gap-2">
         {/* Pinned Video - Large */}
         <div className="flex-1 relative bg-gray-900 rounded-lg overflow-hidden min-h-0">
           {pinnedVideo.isLocal ? (
@@ -299,7 +299,7 @@ export default function VideoGrid({
 
         {/* Unpinned Videos - Grid below */}
         {unpinnedVideos.length > 0 && (
-          <div className={`h-32 video-grid video-grid-${Math.min(unpinnedVideos.length, 5)}`}>
+          <div className={`h-24 sm:h-28 md:h-32 video-grid video-grid-${Math.min(unpinnedVideos.length, 5)}`}>
             {unpinnedVideos.map((video) => {
               const participant = getParticipantInfo(video.clientId);
               const displayName = participant?.displayName || (video.isLocal ? 'You' : video.clientId.substring(0, 8));

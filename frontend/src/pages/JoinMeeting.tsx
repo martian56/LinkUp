@@ -54,29 +54,29 @@ export default function JoinMeeting() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black flex items-center justify-center p-4 sm:p-6">
       <div className="max-w-md w-full">
         <button
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors"
+          className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 sm:mb-8 transition-colors text-sm sm:text-base"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           Back to Home
         </button>
 
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700">
-          <h1 className="text-3xl font-bold mb-2">Join Meeting</h1>
-          <p className="text-gray-400 mb-6">Enter the meeting code and your name</p>
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-700">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Join Meeting</h1>
+          <p className="text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">Enter the meeting code and your name</p>
 
           {error && (
-            <div className="bg-red-500/20 border border-red-500/50 text-red-400 rounded-lg p-3 mb-4">
+            <div className="bg-red-500/20 border border-red-500/50 text-red-400 rounded-lg p-2.5 sm:p-3 mb-3 sm:mb-4 text-sm sm:text-base">
               {error}
             </div>
           )}
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5 sm:mb-2">
                 Meeting Code
               </label>
               <input
@@ -88,12 +88,12 @@ export default function JoinMeeting() {
                 }}
                 placeholder="abc123xyz0"
                 maxLength={10}
-                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 text-center text-lg tracking-wider"
+                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 text-center text-base sm:text-lg tracking-wider"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5 sm:mb-2">
                 Your Name
               </label>
               <input
@@ -102,7 +102,7 @@ export default function JoinMeeting() {
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="Enter your name"
                 maxLength={50}
-                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 text-sm sm:text-base"
                 onKeyPress={(e) => e.key === 'Enter' && handleJoin()}
               />
             </div>
@@ -110,16 +110,16 @@ export default function JoinMeeting() {
             <button
               onClick={handleJoin}
               disabled={isJoining || meetingCode.length !== 10 || !displayName.trim()}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               {isJoining ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Joining...
                 </>
               ) : (
                 <>
-                  <LogIn className="w-5 h-5" />
+                  <LogIn className="w-4 h-4 sm:w-5 sm:h-5" />
                   Join Meeting
                 </>
               )}

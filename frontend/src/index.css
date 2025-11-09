@@ -158,6 +158,17 @@
   
   .video-grid > div {
     aspect-ratio: 16 / 9;
-    min-height: 200px;
+    min-height: 180px;
+  }
+
+  /* Pinned video layout on mobile */
+  .video-grid-pinned {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .video-grid > div {
+    min-height: 150px;
   }
 }
