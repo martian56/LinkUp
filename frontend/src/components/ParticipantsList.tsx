@@ -48,15 +48,15 @@ export default function ParticipantsList({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-0 top-0 bottom-0 w-full md:w-96 bg-gray-900 border-l border-gray-700 flex flex-col z-50">
+    <div className="absolute right-0 top-0 bottom-0 w-full sm:w-80 md:w-96 bg-gray-900 border-l border-gray-700 flex flex-col z-50">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary-500/20 rounded-lg">
-            <Users className="w-5 h-5 text-primary-400" />
+      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-700">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 bg-primary-500/20 rounded-lg">
+            <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Participants</h2>
+            <h2 className="text-base sm:text-lg font-semibold text-white">Participants</h2>
             <div className="text-xs text-gray-400">{totalParticipants} {totalParticipants === 1 ? 'person' : 'people'}</div>
           </div>
         </div>
@@ -69,23 +69,23 @@ export default function ParticipantsList({
       </div>
 
       {/* Participants List */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide p-2">
+      <div className="flex-1 overflow-y-auto scrollbar-hide p-2 sm:p-3">
         {participantsArray.map((participant) => {
           const isPinned = pinnedClientId === participant.clientId;
           const displayName = participant.displayName || (participant.isLocal ? 'You' : participant.clientId.substring(0, 8));
 
           return (
-              <div
-                key={participant.clientId}
-                className="flex items-center gap-3 p-3 hover:bg-gray-800/50 transition-colors border-b border-gray-800/50 last:border-b-0"
-              >
+            <div
+              key={participant.clientId}
+              className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 hover:bg-gray-800/50 transition-colors border-b border-gray-800/50 last:border-b-0"
+            >
                 {/* Avatar/Status */}
                 <div className="relative flex-shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs sm:text-sm">
                     {displayName.charAt(0).toUpperCase()}
                   </div>
                   {participant.isLocal && (
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-gray-900"></div>
+                    <div className="absolute -bottom-0.5 -right-0.5 sm:-bottom-1 sm:-right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-gray-900"></div>
                   )}
                 </div>
 

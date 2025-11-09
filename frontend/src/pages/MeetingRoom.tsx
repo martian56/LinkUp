@@ -226,6 +226,46 @@ export default function MeetingRoom() {
           const others = message.participants.filter((id: string) => id !== clientId);
           setOtherParticipants(others);
           
+          // Update participants Map with existing participants' data
+          if ((message as any).participantsData && Array.isArray((message as any).participantsData)) {
+            const participantsData = (message as any).participantsData as Array<{
+              clientId: string;
+              displayName?: string;
+              audioEnabled?: boolean;
+              videoEnabled?: boolean;
+              screenSharing?: boolean;
+            }>;
+            
+            setParticipants((prev) => {
+              const newMap = new Map(prev);
+              participantsData.forEach((pData) => {
+                if (pData.clientId !== clientId) {
+                  const existing = newMap.get(pData.clientId) || {};
+                  newMap.set(pData.clientId, {
+                    ...existing,
+                    displayName: pData.displayName || existing.displayName,
+                    audioEnabled: pData.audioEnabled !== undefined ? pData.audioEnabled : existing.audioEnabled,
+                    videoEnabled: pData.videoEnabled !== undefined ? pData.videoEnabled : existing.videoEnabled,
+                    screenSharing: pData.screenSharing !== undefined ? pData.screenSharing : existing.screenSharing,
+                  });
+                }
+              });
+              console.log('Updated participants Map from PARTICIPANTS_UPDATE:', Array.from(newMap.entries()));
+              return newMap;
+            });
+          } else {
+            // Fallback: if no participantsData, at least add client IDs to the map
+            setParticipants((prev) => {
+              const newMap = new Map(prev);
+              others.forEach((otherId: string) => {
+                if (!newMap.has(otherId)) {
+                  newMap.set(otherId, {});
+                }
+              });
+              return newMap;
+            });
+          }
+          
           // When we first join, we receive the list of existing participants
           // Wait a bit for existing participants to send us offers, but if they don't, we'll initiate
           setIsInitialized(true);
@@ -738,41 +778,41 @@ export default function MeetingRoom() {
   return (
     <div className="h-screen flex flex-col bg-gray-950 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 bg-gray-900/80 backdrop-blur-sm border-b border-gray-700">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 p-3 sm:p-4 bg-gray-900/80 backdrop-blur-sm border-b border-gray-700">
+        <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
           <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-primary-400" />
-            <span className="text-sm text-gray-300">
+            <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400" />
+            <span className="text-xs sm:text-sm text-gray-300">
               {1 + remoteStreams.size} participant{remoteStreams.size !== 1 ? 's' : ''}
             </span>
           </div>
           {!isConnected && (
-            <div className="flex items-center gap-2 text-yellow-400">
-              <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
-              <span className="text-sm">Connecting...</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 text-yellow-400">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-yellow-400 rounded-full animate-pulse" />
+              <span className="text-xs sm:text-sm">Connecting...</span>
             </div>
           )}
           <button
             onClick={() => setShortcutsOpen(true)}
-            className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-1.5 sm:p-2 hover:bg-gray-800 rounded-lg transition-colors"
             title="Keyboard shortcuts (?)"
           >
-            <HelpCircle className="w-5 h-5 text-gray-400 hover:text-primary-400 transition-colors" />
+            <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 hover:text-primary-400 transition-colors" />
           </button>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg">
-            <span className="text-sm font-mono text-primary-400">{normalizedMeetingCode.toUpperCase()}</span>
+        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-gray-800 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg">
+            <span className="text-xs sm:text-sm font-mono text-primary-400">{normalizedMeetingCode.toUpperCase()}</span>
             <button
               onClick={copyMeetingLink}
               className="p-1 hover:bg-gray-700 rounded transition-colors"
               title="Copy meeting link"
             >
               {copied ? (
-                <Check className="w-4 h-4 text-green-400" />
+                <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-400" />
               ) : (
-                <Copy className="w-4 h-4 text-gray-400" />
+                <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
               )}
             </button>
           </div>

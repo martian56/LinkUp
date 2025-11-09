@@ -34,50 +34,50 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black flex items-center justify-center p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl w-full">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
+        <div className="text-center mb-8 sm:mb-10 md:mb-12">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
             <div className="relative">
-              <Video className="w-12 h-12 text-primary-500" />
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary-500 rounded-full border-2 border-gray-900"></div>
+              <Video className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary-500" />
+              <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 bg-primary-500 rounded-full border-2 border-gray-900"></div>
             </div>
-            <h1 className="text-5xl font-bold gradient-text">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold gradient-text">
               LinkUp
             </h1>
           </div>
-          <p className="text-gray-400 text-lg">
+          <p className="text-gray-400 text-sm sm:text-base md:text-lg px-4">
             Connect instantly with your team. Modern video meetings for up to 10 people.
           </p>
         </div>
 
         {/* Main Actions */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Create Meeting Card */}
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-primary-500 transition-all">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-primary-500/20 rounded-lg">
-                <Plus className="w-6 h-6 text-primary-400" />
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-700 hover:border-primary-500 transition-all">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="p-2 sm:p-3 bg-primary-500/20 rounded-lg">
+                <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400" />
               </div>
-              <h2 className="text-2xl font-semibold">New Meeting</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold">New Meeting</h2>
             </div>
-            <p className="text-gray-400 mb-6">
+            <p className="text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">
               Start an instant meeting and share the link with your team
             </p>
             <button
               onClick={handleCreateMeeting}
               disabled={isCreating}
-              className="w-full bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary-500/50 hover:shadow-xl hover:shadow-primary-500/60 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              className="w-full bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary-500/50 hover:shadow-xl hover:shadow-primary-500/60 hover:scale-[1.02] active:scale-[0.98] cursor-pointer text-sm sm:text-base"
             >
               {isCreating ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Creating...
                 </>
               ) : (
                 <>
-                  <Plus className="w-5 h-5" />
+                  <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                   Create Meeting
                 </>
               )}
@@ -85,31 +85,31 @@ export default function Home() {
           </div>
 
           {/* Join Meeting Card */}
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-primary-500 transition-all">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-green-500/20 rounded-lg">
-                <LogIn className="w-6 h-6 text-green-400" />
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-700 hover:border-primary-500 transition-all">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="p-2 sm:p-3 bg-green-500/20 rounded-lg">
+                <LogIn className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" />
               </div>
-              <h2 className="text-2xl font-semibold">Join Meeting</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold">Join Meeting</h2>
             </div>
-            <p className="text-gray-400 mb-6">
+            <p className="text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">
               Enter a meeting code to join an existing meeting
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 value={meetingCode}
                 onChange={(e) => setMeetingCode(e.target.value.toUpperCase())}
                 placeholder="Enter meeting code"
                 maxLength={10}
-                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 text-sm sm:text-base"
                 onKeyPress={(e) => e.key === 'Enter' && handleJoinMeeting()}
               />
               <button
                 onClick={handleJoinMeeting}
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center gap-2"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
               >
-                <LogIn className="w-5 h-5" />
+                <LogIn className="w-4 h-4 sm:w-5 sm:h-5" />
                 Join
               </button>
             </div>
@@ -117,21 +117,21 @@ export default function Home() {
         </div>
 
         {/* Features */}
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
-            <Users className="w-6 h-6 text-primary-400 mb-2" />
-            <h3 className="font-semibold mb-1">Up to 10 People</h3>
-            <p className="text-sm text-gray-400">Connect with your team</p>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+          <div className="bg-gray-800/30 rounded-lg p-3 sm:p-4 border border-gray-700/50">
+            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400 mb-2" />
+            <h3 className="font-semibold mb-1 text-sm sm:text-base">Up to 10 People</h3>
+            <p className="text-xs sm:text-sm text-gray-400">Connect with your team</p>
           </div>
-          <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
-            <Video className="w-6 h-6 text-primary-400 mb-2" />
-            <h3 className="font-semibold mb-1">HD Video</h3>
-            <p className="text-sm text-gray-400">Crystal clear quality</p>
+          <div className="bg-gray-800/30 rounded-lg p-3 sm:p-4 border border-gray-700/50">
+            <Video className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400 mb-2" />
+            <h3 className="font-semibold mb-1 text-sm sm:text-base">HD Video</h3>
+            <p className="text-xs sm:text-sm text-gray-400">Crystal clear quality</p>
           </div>
-          <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
-            <div className="w-6 h-6 text-primary-400 mb-2">💬</div>
-            <h3 className="font-semibold mb-1">Live Chat</h3>
-            <p className="text-sm text-gray-400">Chat during meetings</p>
+          <div className="bg-gray-800/30 rounded-lg p-3 sm:p-4 border border-gray-700/50 sm:col-span-2 md:col-span-1">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400 mb-2 text-xl sm:text-2xl">💬</div>
+            <h3 className="font-semibold mb-1 text-sm sm:text-base">Live Chat</h3>
+            <p className="text-xs sm:text-sm text-gray-400">Chat during meetings</p>
           </div>
         </div>
       </div>

@@ -19,10 +19,10 @@ export default function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShort
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
       <div className="bg-gray-900 rounded-lg border border-gray-700 shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-700">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary-500/20 rounded-lg">
               <Keyboard className="w-6 h-6 text-primary-400" />
@@ -39,14 +39,14 @@ export default function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShort
         </div>
 
         {/* Shortcuts List */}
-        <div className="p-6 space-y-4">
+        <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
           {shortcuts.map((shortcut, index) => (
             <div
               key={index}
-              className="flex items-center justify-between gap-4 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors"
+              className="flex items-center justify-between gap-3 sm:gap-4 p-2.5 sm:p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors"
             >
-              <span className="text-gray-300 flex-1">{shortcut.description}</span>
-              <kbd className="px-3 py-1.5 bg-gray-700 border border-gray-600 rounded text-sm font-mono text-white shadow-inner min-w-[3rem] text-center">
+              <span className="text-gray-300 flex-1 text-sm sm:text-base">{shortcut.description}</span>
+              <kbd className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-700 border border-gray-600 rounded text-xs sm:text-sm font-mono text-white shadow-inner min-w-[2.5rem] sm:min-w-[3rem] text-center">
                 {shortcut.key}
               </kbd>
             </div>
@@ -54,8 +54,8 @@ export default function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShort
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-700 bg-gray-800/30">
-          <p className="text-sm text-gray-400 text-center">
+        <div className="p-4 sm:p-6 border-t border-gray-700 bg-gray-800/30">
+          <p className="text-xs sm:text-sm text-gray-400 text-center">
             Shortcuts are disabled when typing in input fields
           </p>
         </div>

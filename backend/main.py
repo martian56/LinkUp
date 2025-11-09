@@ -269,11 +269,38 @@ async def websocket_endpoint(
             "timestamp": datetime.now(UTC).isoformat()
         }, exclude_client=client_id)
         
-        # Send current participants list to new user
+        # Send current participants list to new user with their data
         participant_list = list(active_connections[meeting_code].keys())
+        
+        # Fetch participant data from database
+        participants_data = []
+        async with AsyncSessionLocal() as db:
+            try:
+                result = await db.execute(
+                    select(Participant).where(
+                        Participant.meeting_id == meeting.id,
+                        Participant.is_active == True
+                    )
+                )
+                db_participants = result.scalars().all()
+                for p in db_participants:
+                    if p.client_id in participant_list:
+                        participants_data.append({
+                            "clientId": p.client_id,
+                            "displayName": p.display_name,
+                            "audioEnabled": p.audio_enabled,
+                            "videoEnabled": p.video_enabled,
+                            "screenSharing": p.screen_sharing
+                        })
+            except Exception as e:
+                logger.error(f"Error fetching participant data: {e}")
+                # Fallback to just client IDs if database query fails
+                participants_data = [{"clientId": cid} for cid in participant_list]
+        
         await websocket.send_json({
             "type": WSMessageType.PARTICIPANTS_UPDATE,
-            "participants": participant_list
+            "participants": participant_list,
+            "participantsData": participants_data
         })
         
         # Main message loop
